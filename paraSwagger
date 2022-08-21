@@ -1,0 +1,139 @@
+    BodyPersonajesGet:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Nombre del personaje
+        age:
+          type: string
+          description: Edad del personaje
+        Movies:
+          type: string
+          description: Id de la película donde sale el personaje
+
+Además, Muestra el listado de todos los personajes mostrando su imagen y nombre. 
+
+
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QueryPersonajesGet'
+
+
+, y ﬁltrar por edad,  o películas/series en las que participó
+
+Para el endpoint Delete
+      responses:
+        '400':
+          description: Invalid username supplied
+        '404':
+          description: User not found
+
+
+
+
+
+
+// //LOGIN
+
+// const users = [
+//   { id: 1, name: "Franco", email: "Franco@mail.com", password: "1234" },
+//   { id: 2, name: "Toni", email: "Toni@mail.com", password: "1234" },
+// ];
+
+
+// server.use((req, res, next) => {
+//   console.log(req.cookies);
+//   next();
+// });
+
+// const isAuthenticated = (req, res, next) => {
+//   let { userID } = req.cookies;
+//   const user = users.find((u) => userID === u.id.toString());
+//   if (user) {
+//     console.log("isAuthenticated :)");
+//     return res.redirect("/home");
+//   }
+//   console.log("isNotAuthenticated");
+//   next();
+// };
+
+// const isNotAuthenticated = (req, res, next) => {
+//   let { userID } = req.cookies;
+//   const user = users.find((u) => userID === u.id.toString());
+//   if (!user) res.redirect("/auth/login");
+//   next();
+// };
+
+// server.get("/", (req, res) => {
+//   let { userID } = req.cookies;
+//   res.send(`
+//     <h1>Bienvenidos al Mundo de Disney!</h1>
+//     ${
+//       userID
+//         ? `
+//       <a href='/home'>Perfil</a>
+//       <form method='post' action='/logout'>
+//         <button>Salir</button>
+//       </form>
+//       `
+//         : `
+//       <a href='/login'>Ingresar</a>
+//       <a href='/register'>Registrarse</a>
+//       `
+//     }
+//   `);
+// });
+
+// server.get("/auth/login", isAuthenticated, (req, res) => {
+//   res.send(`
+//     <h1>Iniciar Sesión</h1>
+//     <form method='post' action='/login' >
+//       <input type='email' name='email' placeholder='email' required />
+//       <input type='password' name='password' placeholder='password' required />
+//       <input type='submit' value='Ingresar' />
+//     </form>
+//     <a href='/register/'>Registrarse</a>
+//     `);
+// });
+
+// server.post("/auth/login", (req, res) => {
+//   console.log("post to /auth/logging");
+//   const { email, password } = req.body;
+//   if (email && password) {
+//     const user = users.find(
+//       (p) =>
+//         p.email.toLowerCase() === email.toLowerCase() && p.password === password
+//     );
+
+//     if (user.id) {
+      
+//       res.cookie("userID", user.id); 
+//       res.redirect("/home");
+//     } else {
+//       res.redirect("/auth/login");
+//     }
+//   }
+// });
+
+// server.get("/auth/register", isAuthenticated, (req, res) => {
+//   res.send(`
+//         <h1>Registrarse</h1>
+//         <form method='post' action='/auth/register'>
+//           <input name='name' placeholder='Nombre' required />
+//           <input type='email' name='email' placeholder='Email' required />
+//           <input type='password' name='password' placeholder='Contraseña' required />
+//           <input type='submit' value='Registrarse' />
+//         </form>
+//         <a href='/auth/login'>Iniciar sesión</a>
+//       `);
+// });
+
+
+
+
+// server.post("/logout", (req, res) => {
+//   res.clearCookie("userID");
+//   res.redirect("/");
+// });

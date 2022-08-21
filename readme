@@ -1,0 +1,4 @@
+Puede usar estas credenciales para poder loggearse en '/login':
+email: Franco@mail.com, password: 1234.
+
+--Usar npm run dev para inicializar el server.
