@@ -1,7 +1,8 @@
 
---Usar npm start para inicializar el server.
+--Usar npm start para inicializar el server y npm i para instalar todas las dependencias de Node que se usaron en este proyecto.
 
-[IMPORTANTE]: Para que el servicio de envío de emails de bienvenida provisto por Sendgrid funcione correctamente, debe 'BORRAR' la palabra 'ALKEMY' que está contenida en la variable de entorno llamada 'SENDGRID_API_KEY' en el archivo .env.
+[IMPORTANTE]: Para que el servicio de envío de emails de bienvenida provisto por Sendgrid funcione correctamente, debe 'BORRAR' la palabra 'ALKEMY' que está contenida en la variable de entorno llamada 'SENDGRID_API_KEY' en el archivo .env. --> Actualización: cometí el error de exponer las claves al subir el archivo .env y ahora el servicio de Sendgrid impide que el servicio de envio de emails funcione correctamente, podrá ver un error como este: ResponseError: Unauthorized. Lo siento.
+
 
 -Para obtener el Token de Autorización, debe registrarse en el endpoint http://localhost:4001/auth/register proporcionando un username, email y password. Además de recibir el Token, se enviará un correo de bienvenida al email consignado.
 

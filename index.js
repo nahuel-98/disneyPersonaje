@@ -1,7 +1,7 @@
-const app = require('./app')
-require('./db') 
-const verifyToken = require('./controllers/verifyToken')
-const express = require('express');
+const app = require("./app");
+require("./db");
+const verifyToken = require("./controllers/verifyToken");
+const express = require("express");
 var morgan = require("morgan");
 const { db, Film, Character } = require("./db.js");
 
@@ -10,11 +10,9 @@ app.use(express.json());
 app.use(morgan("dev"));
 app.use(express.urlencoded({ extended: false })); //permite entender lo que llegue de formularios convirtiendolo en un objeto JS.
 
-
-
 //3. Listado de personajes - ESTADO: HECHO
 //6. Busqueda de personajes - Estado: HECHO - Busqueda por nombre, edad y IdMovie.
-app.get("/characters", verifyToken,async (req, res) => {
+app.get("/characters", verifyToken, async (req, res) => {
   let { name, age, movies } = req.query;
   if (name || age || movies) {
     if (name) {
@@ -65,19 +63,19 @@ app.get("/characters", verifyToken,async (req, res) => {
 });
 
 //5. Detalle de Personaje. ESTADO: HECHO
-app.get("/character/:id", verifyToken,async (req, res) => {
+app.get("/character/:id", verifyToken, async (req, res) => {
   try {
     let { id } = req.params;
-    
+
     const character = await Character.findOne({
-        where: {
-          id,
-        },
-      })
-    if (!character){
-      return res.status(404).send('El personaje con el ID provisto no existe')
+      where: {
+        id,
+      },
+    });
+    if (!character) {
+      return res.status(404).send("El personaje con el ID provisto no existe");
     }
-    return res.send(character)
+    return res.send(character);
   } catch (e) {
     res.send(e);
   }
@@ -86,10 +84,10 @@ app.get("/character/:id", verifyToken,async (req, res) => {
 //4. CRUD. - listo
 
 //CREATE. ESTADO: LISTO
-app.post("/character", verifyToken,async (req, res) => {
+app.post("/character", verifyToken, async (req, res) => {
   let { image, name, age, weight, history } = req.body;
   try {
-    if (image && name && age && weight && history ){
+    if (image && name && age && weight && history) {
       const newCharacter = await Character.create({
         image,
         name,
@@ -97,20 +95,23 @@ app.post("/character", verifyToken,async (req, res) => {
         weight,
         history,
       });
-    return res.status(201).json(newCharacter);
+      return res.status(201).json(newCharacter);
     }
-    return res.status(400).send('Falta ingresar el valor de una o más propiedades para crear el personaje')
-
+    return res
+      .status(400)
+      .send(
+        "Falta ingresar el valor de una o más propiedades para crear el personaje"
+      );
   } catch (e) {
-      res.send(e);
+    res.send(e);
   }
 });
 
 //UPDATE. ESTADO: LISTO
-app.put("/character", verifyToken,async (req, res) => {
+app.put("/character", verifyToken, async (req, res) => {
   const { id, name, age, weight, history } = req.body;
   try {
-    if(id && name && age && weight && history){
+    if (id && name && age && weight && history) {
       const response = await Character.update(
         { name, age, weight, history },
         {
@@ -119,29 +120,34 @@ app.put("/character", verifyToken,async (req, res) => {
           },
         }
       );
-    return res.status(200).send(`${response} personajes modificados`);
+      return res.status(200).send(`${response} personajes modificados`);
     }
-    return res.status(400).send('Falta ingresar el valor de una o más propiedades para modificar el personaje')
-
+    return res
+      .status(400)
+      .send(
+        "Falta ingresar el valor de una o más propiedades para modificar el personaje"
+      );
   } catch (e) {
     res.send(e);
   }
 });
 
 //DELETE. ESTADO: LISTA
-app.delete("/character/:id", verifyToken,async (req, res) => {
+app.delete("/character/:id", verifyToken, async (req, res) => {
   try {
     let { id } = req.params;
     const response = await Character.destroy({
-        where: {
-          id,
-        },
-      })
-    
-      if(response == 0){
-      return res.status(400).send('El ID ingresado no corresponde a un personaje válido')    
-      }
-      return res.status(200).send(` ${response} personaje modificado`);
+      where: {
+        id,
+      },
+    });
+
+    if (response == 0) {
+      return res
+        .status(400)
+        .send("El ID ingresado no corresponde a un personaje válido");
+    }
+    return res.status(200).send(` ${response} personaje modificado`);
   } catch (e) {
     res.send(e);
   }
@@ -150,7 +156,7 @@ app.delete("/character/:id", verifyToken,async (req, res) => {
 //MOVIES
 
 //7. Listado de peliculas. Estado: Listo
-app.get("/movies", verifyToken,async (req, res) => {
+app.get("/movies", verifyToken, async (req, res) => {
   try {
     let movies = await Film.findAll({
       attributes: ["image", "title", "Creation date"],
@@ -162,7 +168,7 @@ app.get("/movies", verifyToken,async (req, res) => {
 });
 
 //8. Detalle de películas con sus personajes. Estado: Listo
-app.get("/films/:id", verifyToken,async (req, res) => {
+app.get("/films/:id", verifyToken, async (req, res) => {
   try {
     let { id } = req.params;
     const allData = await Film.findOne({
@@ -179,8 +185,10 @@ app.get("/films/:id", verifyToken,async (req, res) => {
         },
       ],
     });
-    if (!allData){
-      return res.status(404).send('La película/serie con el ID provisto no existe')
+    if (!allData) {
+      return res
+        .status(404)
+        .send("La película/serie con el ID provisto no existe");
     }
     res.json(allData);
   } catch (e) {
@@ -190,29 +198,33 @@ app.get("/films/:id", verifyToken,async (req, res) => {
 
 //9. CRUD. Estado: Listo
 //Create- Estado: Listo -
-app.post("/film", verifyToken,async (req, res) => {
+app.post("/film", verifyToken, async (req, res) => {
   let { image, title, calification } = req.body;
   try {
-    if (image && title && calification){
-    const newFilm = await Film.create({
-      image,
-      title,
-      calification,
-    });
+    if (image && title && calification) {
+      const newFilm = await Film.create({
+        image,
+        title,
+        calification,
+      });
 
-    return res.status(201).json(newFilm);
+      return res.status(201).json(newFilm);
     }
-    return res.status(400).send('Falta ingresar el valor de una o más propiedades para crear la película/serie')
+    return res
+      .status(400)
+      .send(
+        "Falta ingresar el valor de una o más propiedades para crear la película/serie"
+      );
   } catch (e) {
     res.send(e);
   }
 });
 
 //Update- Estado: Listo
-app.put("/films",async (req, res) => {
+app.put("/films", async (req, res) => {
   const { id, image, title, calification } = req.body;
   try {
-    if(id && image && title && calification){
+    if (id && image && title && calification) {
       const response = await Film.update(
         { image, title, calification },
         {
@@ -223,23 +235,29 @@ app.put("/films",async (req, res) => {
       );
       return res.send(`${response} films modificados`);
     }
-    return res.status(400).send('Falta ingresar el valor de una o más propiedades para modificar la película/serie')
+    return res
+      .status(400)
+      .send(
+        "Falta ingresar el valor de una o más propiedades para modificar la película/serie"
+      );
   } catch (e) {
     res.send(e);
   }
 });
 
 //Delete - Estado: Lista
-app.delete("/movies/:id",async (req, res) => {
+app.delete("/movies/:id", async (req, res) => {
   try {
     let { id } = req.params;
     const response = await Film.destroy({
-        where: {
-          id,
-        },
-      })
-    if(response == 0){
-        return res.status(400).send('El ID ingresado no corresponde a una película/serie válida')    
+      where: {
+        id,
+      },
+    });
+    if (response == 0) {
+      return res
+        .status(400)
+        .send("El ID ingresado no corresponde a una película/serie válida");
     }
     return res.status(200).send(`${response} película/serie eliminada`);
   } catch (e) {
@@ -247,10 +265,9 @@ app.delete("/movies/:id",async (req, res) => {
   }
 });
 
-
 var server = app.listen(4001, () => {
-    console.log("Listening on port 4001 :)");
-    db.sync({ force: false });
-  });
+  console.log("Listening on port 4001 :)");
+  db.sync({ force: false });
+});
 
-  module.exports = server
+module.exports = server;
