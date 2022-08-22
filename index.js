@@ -12,28 +12,11 @@ app.use(express.urlencoded({ extended: false })); //permite entender lo que lleg
 
 
 
-//ESTADO: FUNCIONA
-app.put("/transfer/:id", async (req, res) => {
-  const { id } = req.params;
-  let character = await Character.findByPk(id);
-  res.json(await character.addFilms([4, 5]));
-});
-
-//ESTADO: FUNCIONA
-app.get("/loadall", verifyToken,async (req, res) => {
-  const allData = await Character.findAll({
-    include: Film,
-  });
-  res.send(allData);
-});
-
-
-
 //3. Listado de personajes - ESTADO: HECHO
 //6. Busqueda de personajes - Estado: HECHO - Busqueda por nombre, edad y IdMovie.
 app.get("/characters", verifyToken,async (req, res) => {
-  let { name, age, Movies } = req.query;
-  if (name || age || Movies) {
+  let { name, age, movies } = req.query;
+  if (name || age || movies) {
     if (name) {
       try {
         res.json(
@@ -61,9 +44,9 @@ app.get("/characters", verifyToken,async (req, res) => {
     } else {
       try {
         res.json(
-          await Film.findAll({
+          await Film.findOne({
             where: {
-              id: Movies,
+              id: movies,
             },
           })
         );
@@ -74,9 +57,9 @@ app.get("/characters", verifyToken,async (req, res) => {
   } else {
     try {
       let characts = await Character.findAll({ attributes: ["image", "name"] });
-      res.json(characts);
+      return res.json(characts);
     } catch (e) {
-      res.send(e);
+      return res.send(e);
     }
   }
 });
@@ -85,13 +68,16 @@ app.get("/characters", verifyToken,async (req, res) => {
 app.get("/character/:id", verifyToken,async (req, res) => {
   try {
     let { id } = req.params;
-    res.json(
-      await Character.findAll({
+    
+    const character = await Character.findOne({
         where: {
           id,
         },
       })
-    );
+    if (!character){
+      return res.status(404).send('El personaje con el ID provisto no existe')
+    }
+    return res.send(character)
   } catch (e) {
     res.send(e);
   }
@@ -103,16 +89,20 @@ app.get("/character/:id", verifyToken,async (req, res) => {
 app.post("/character", verifyToken,async (req, res) => {
   let { image, name, age, weight, history } = req.body;
   try {
-    const newCharacter = await Character.create({
-      image,
-      name,
-      age,
-      weight,
-      history,
-    });
-    res.json(newCharacter);
+    if (image && name && age && weight && history ){
+      const newCharacter = await Character.create({
+        image,
+        name,
+        age,
+        weight,
+        history,
+      });
+    return res.status(201).json(newCharacter);
+    }
+    return res.status(400).send('Falta ingresar el valor de una o más propiedades para crear el personaje')
+
   } catch (e) {
-    res.send(e);
+      res.send(e);
   }
 });
 
@@ -120,15 +110,19 @@ app.post("/character", verifyToken,async (req, res) => {
 app.put("/character", verifyToken,async (req, res) => {
   const { id, name, age, weight, history } = req.body;
   try {
-    const response = await Character.update(
-      { name, age, weight, history },
-      {
-        where: {
-          id,
-        },
-      }
-    );
-    res.send(`${response} personajes modificados`);
+    if(id && name && age && weight && history){
+      const response = await Character.update(
+        { name, age, weight, history },
+        {
+          where: {
+            id,
+          },
+        }
+      );
+    return res.status(200).send(`${response} personajes modificados`);
+    }
+    return res.status(400).send('Falta ingresar el valor de una o más propiedades para modificar el personaje')
+
   } catch (e) {
     res.send(e);
   }
@@ -138,13 +132,16 @@ app.put("/character", verifyToken,async (req, res) => {
 app.delete("/character/:id", verifyToken,async (req, res) => {
   try {
     let { id } = req.params;
-    res.json(
-      await Character.destroy({
+    const response = await Character.destroy({
         where: {
           id,
         },
       })
-    );
+    
+      if(response == 0){
+      return res.status(400).send('El ID ingresado no corresponde a un personaje válido')    
+      }
+      return res.status(200).send(` ${response} personaje modificado`);
   } catch (e) {
     res.send(e);
   }
@@ -168,7 +165,7 @@ app.get("/movies", verifyToken,async (req, res) => {
 app.get("/films/:id", verifyToken,async (req, res) => {
   try {
     let { id } = req.params;
-    const allData = await Film.findAll({
+    const allData = await Film.findOne({
       where: {
         id,
       },
@@ -182,6 +179,9 @@ app.get("/films/:id", verifyToken,async (req, res) => {
         },
       ],
     });
+    if (!allData){
+      return res.status(404).send('La película/serie con el ID provisto no existe')
+    }
     res.json(allData);
   } catch (e) {
     res.send(e);
@@ -193,55 +193,64 @@ app.get("/films/:id", verifyToken,async (req, res) => {
 app.post("/film", verifyToken,async (req, res) => {
   let { image, title, calification } = req.body;
   try {
+    if (image && title && calification){
     const newFilm = await Film.create({
       image,
       title,
       calification,
     });
 
-    console.log(newFilm.toJSON());
-    res.json(newFilm);
+    return res.status(201).json(newFilm);
+    }
+    return res.status(400).send('Falta ingresar el valor de una o más propiedades para crear la película/serie')
   } catch (e) {
     res.send(e);
   }
 });
 
 //Update- Estado: Listo
-app.put("/films", verifyToken,async (req, res) => {
+app.put("/films",async (req, res) => {
   const { id, image, title, calification } = req.body;
   try {
-    const response = await Film.update(
-      { image, title, calification },
-      {
-        where: {
-          id,
-        },
-      }
-    );
-    res.send(`${response} personajes modificados`);
+    if(id && image && title && calification){
+      const response = await Film.update(
+        { image, title, calification },
+        {
+          where: {
+            id,
+          },
+        }
+      );
+      return res.send(`${response} films modificados`);
+    }
+    return res.status(400).send('Falta ingresar el valor de una o más propiedades para modificar la película/serie')
   } catch (e) {
     res.send(e);
   }
 });
 
 //Delete - Estado: Lista
-app.delete("/movies/:id", verifyToken,async (req, res) => {
+app.delete("/movies/:id",async (req, res) => {
   try {
     let { id } = req.params;
-    res.json(
-      await Film.destroy({
+    const response = await Film.destroy({
         where: {
           id,
         },
       })
-    );
+    if(response == 0){
+        return res.status(400).send('El ID ingresado no corresponde a una película/serie válida')    
+    }
+    return res.status(200).send(`${response} película/serie eliminada`);
   } catch (e) {
     res.send(e);
   }
 });
 
 
-app.listen(4001, () => {
+var server = app.listen(4001, () => {
     console.log("Listening on port 4001 :)");
     db.sync({ force: false });
   });
+
+  module.exports = server

@@ -1,0 +1,579 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "API Disney princesas - Challenge Alkemy",
+    "description": "Es el challenge correspondiente para aplicar a la aceleración de Node.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:4001/"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Personajes",
+      "description": "Todo sobre tus personajes de Disney."
+    },
+    {
+      "name": "Películas",
+      "description": "Peliculas o series donde puedes ver a tus personajes de Disney."
+    },
+    {
+      "name": "Usuarios",
+      "description": "Operaciones sobre usuarios."
+    }
+  ],
+  "paths": {
+    "/characters": {
+      "get": {
+        "tags": [
+          "Personajes"
+        ],
+        "summary": "Muestra nombre e imagen de todos los personajes.",
+        "description": "No hace falta ingresar parámetros salvo el token de autenticación.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/token"
+          }
+        ]
+      }
+    },
+    "/characters?name=nombre": {
+      "get": {
+        "tags": [
+          "Personajes"
+        ],
+        "summary": "Permite buscar un personaje por nombre.",
+        "description": "Para especiﬁcar el término de búsqueda o ﬁltros se deberán enviar como parámetros de query -> Para buscar por nombre puede usar http://localhost:4001/characters?name=nombre. Además, ingresar token de autenticación.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/token"
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "description": "Nombre de la princesa de Disney",
+            "required": false,
+            "explode": true
+          }
+        ]
+      }
+    },
+    "/characters?age=edad": {
+      "get": {
+        "tags": [
+          "Personajes"
+        ],
+        "summary": "Permite buscar un personaje por edad.",
+        "description": "Para especiﬁcar el término de búsqueda se deberán enviar como parámetros de query -> Para buscar por edad puede usar http://localhost:4001/characters?age=edad. Además, ingresar token de autenticación.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/token"
+          },
+          {
+            "name": "age",
+            "in": "query",
+            "description": "Edad de la princesa de Disney.",
+            "required": false,
+            "explode": true
+          }
+        ]
+      }
+    },
+    "/characters?movies=idMovie": {
+      "get": {
+        "tags": [
+          "Personajes"
+        ],
+        "summary": "Permite buscar un personaje por películas/series en las que participó.",
+        "description": "Para especiﬁcar el término de búsqueda o ﬁltros se deberán enviar como parámetros de query -> Para buscar por id de la película, puede usar http://localhost:4001/characters?movies=idMovie. Además, ingresar token de autenticación.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/token"
+          },
+          {
+            "name": "idMovie",
+            "in": "query",
+            "description": "Id de la película o serie en la que participó.",
+            "required": true,
+            "explode": true
+          }
+        ]
+      }
+    },
+    "/character/{id}": {
+      "get": {
+        "tags": [
+          "Personajes"
+        ],
+        "summary": "Permite mostrar el detalle de un personaje, mostrando atributos y películas o series donde participó.",
+        "description": "Para especiﬁcar el término de búsqueda se deberá enviar como parámetro 'params' el ID del personaje.\nAdemás, ingresar token de autenticación.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/token"
+          },
+          {
+            "name": "idCharacter",
+            "in": "path",
+            "description": "Id del personaje.",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Personajes"
+        ],
+        "summary": "Eliminar personaje.",
+        "description": "Esto puede ser hecho por un usuario logueado, teniendo un Token de autenticación. Debe suministrar el ID del personaje a eliminar.",
+        "parameters": [
+          {
+            "name": "IDCharacter",
+            "in": "path",
+            "description": "ID del personaje a eliminar.",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ]
+      }
+    },
+    "/character": {
+      "post": {
+        "tags": [
+          "Personajes"
+        ],
+        "summary": "Permite crear un nuevo personaje.",
+        "description": "Esto puede ser hecho por un usuario logueado, teniendo un Token de autenticación. Debe suministrar una imagen, nombre, edad, peso e historia del personaje a crear.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/token"
+          }
+        ],
+        "requestBody": {
+          "description": "Crear personaje.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Personajes"
+        ],
+        "summary": "Actualizar personaje existente.",
+        "description": "Esto puede ser hecho por un usuario logueado, teniendo un Token de autenticación. Debe suministrar el ID del personaje a modificar, como así también los nuevos valores de nombre, edad, peso e historia.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/token"
+          }
+        ],
+        "requestBody": {
+          "description": "Actualizar un personaje existente.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User2"
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/User2"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/User2"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/movies": {
+      "get": {
+        "tags": [
+          "Películas"
+        ],
+        "summary": "Muestra imagen, título y fecha de creación del listado de películas disponible.",
+        "description": "No hace falta ingresar parámetros salvo el token de autenticación.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/token"
+          }
+        ]
+      }
+    },
+    "/films/{id}": {
+      "get": {
+        "tags": [
+          "Películas"
+        ],
+        "summary": "Muestra todos los campos de la película o serie junto a los personajes asociados a la misma.",
+        "description": "Para especiﬁcar el término de búsqueda se deberá enviar como parámetro 'params' el ID de la película o serie. Además, ingresar token de autenticación.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/token"
+          },
+          {
+            "name": "idMovie",
+            "in": "path",
+            "description": "Id del personaje.",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ]
+      }
+    },
+    "/film": {
+      "post": {
+        "tags": [
+          "Películas"
+        ],
+        "summary": "Permite crear una nueva película o serie.",
+        "description": "Esto puede ser hecho por un usuario logueado, teniendo un Token de autenticación. Debe suministrar una imagen, título y calificación (1 al 5) del film a crear.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/token"
+          }
+        ],
+        "requestBody": {
+          "description": "Crear serie/película.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Movie"
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/Movie"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/Movie"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/films": {
+      "put": {
+        "tags": [
+          "Películas"
+        ],
+        "summary": "Permite actualizar una película o serie existente.",
+        "description": "Esto puede ser hecho por un usuario logueado, teniendo un Token de autenticación. Debe suministrar el ID de la película/serie a modificar, como así también los nuevos valores de imagen, título y calificación (1 al 5).",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/token"
+          }
+        ],
+        "requestBody": {
+          "description": "Actualizar serie/película.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Movie2"
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/Movie2"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/Movie2"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/movies/{id}": {
+      "delete": {
+        "tags": [
+          "Películas"
+        ],
+        "summary": "Eliminar película/serie.",
+        "description": "Esto puede ser hecho por un usuario logueado, teniendo un Token de autenticación. Debe suministrar el ID de la película/serie a eliminar.",
+        "parameters": [
+          {
+            "name": "IDMovie",
+            "in": "path",
+            "description": "ID de la película/serie a eliminar.",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ]
+      }
+    },
+    "/auth/register": {
+      "post": {
+        "tags": [
+          "Usuarios"
+        ],
+        "summary": "Crear usuario.",
+        "description": "Se debe suministrar nombre de usuario, email y contraseña. Se recibirá un email de bienvenida al email suministrado.",
+        "requestBody": {
+          "description": "Crear nuevo usuario",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User3"
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/User3"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/User3"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": [
+          "Usuarios"
+        ],
+        "summary": "Iniciar sesión.",
+        "description": "Se debe suministrar email y contraseña. Al brindar las credenciales de acceso, recibirá un Token de Autorización para acceder a otros recursos.",
+        "requestBody": {
+          "description": "Iniciar sesión.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User4"
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/User4"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/User4"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "responses": null,
+    "parameters": {
+      "token": {
+        "name": "token",
+        "in": "header",
+        "description": "Token de autenticación",
+        "required": true
+      }
+    },
+    "schemas": {
+      "QueryPersonajesGet": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Nombre del personaje"
+          },
+          "age": {
+            "type": "string",
+            "description": "Edad del personaje"
+          },
+          "Movies": {
+            "type": "string",
+            "description": "Id de la película donde sale el personaje"
+          }
+        }
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "image": {
+            "type": "string",
+            "example": "image-1"
+          },
+          "name": {
+            "type": "string",
+            "example": "Elsa"
+          },
+          "age": {
+            "type": "integer",
+            "example": 25
+          },
+          "weight": {
+            "type": "integer",
+            "example": 55
+          },
+          "history": {
+            "type": "string",
+            "example": "Vivia en un castillo de hielo"
+          }
+        },
+        "xml": {
+          "name": "user"
+        }
+      },
+      "User2": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "example": "Elsa"
+          },
+          "age": {
+            "type": "integer",
+            "example": 25
+          },
+          "weight": {
+            "type": "integer",
+            "example": 55
+          },
+          "history": {
+            "type": "string",
+            "example": "Vivia en un castillo de hielo"
+          }
+        },
+        "xml": {
+          "name": "user"
+        }
+      },
+      "User3": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "example": "nahuel98"
+          },
+          "email": {
+            "type": "string",
+            "example": "nahuel@hotmail.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "hola123"
+          }
+        },
+        "xml": {
+          "name": "user"
+        }
+      },
+      "User4": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "nahuel@hotmail.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "hola123"
+          }
+        },
+        "xml": {
+          "name": "user"
+        }
+      },
+      "Movie": {
+        "type": "object",
+        "properties": {
+          "image": {
+            "type": "string",
+            "example": "image-1"
+          },
+          "title": {
+            "type": "string",
+            "example": "Frozen"
+          },
+          "calification": {
+            "type": "integer",
+            "example": 5
+          }
+        },
+        "xml": {
+          "name": "user"
+        }
+      },
+      "Movie2": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 4
+          },
+          "image": {
+            "type": "string",
+            "example": "image-1"
+          },
+          "title": {
+            "type": "string",
+            "example": "Frozen"
+          },
+          "calification": {
+            "type": "integer",
+            "example": 5
+          }
+        },
+        "xml": {
+          "name": "user"
+        }
+      }
+    }
+  }
+}

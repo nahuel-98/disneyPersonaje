@@ -1,4 +1,14 @@
-Puede usar estas credenciales para poder loggearse en '/login':
-email: Franco@mail.com, password: 1234.
 
---Usar npm run dev para inicializar el server.
+--Usar npm start para inicializar el server.
+
+[IMPORTANTE]: Para que el servicio de envío de emails de bienvenida provisto por Sendgrid funcione correctamente, debe 'BORRAR' la palabra 'ALKEMY' que está contenida en la variable de entorno llamada 'SENDGRID_API_KEY' en el archivo .env.
+
+-Para obtener el Token de Autorización, debe registrarse en el endpoint http://localhost:4001/auth/register proporcionando un username, email y password. Además de recibir el Token, se enviará un correo de bienvenida al email consignado.
+
+-Documentación de API
+Para ver la documentación de la API donde encontrará una guía para ejecutar cada endpoint correctamente, visite Swagger (https://editor.swagger.io/), en la solapa 'File' clickear sobre 'Import File', luego abrir el archivo openapi.json que se encuentra en esta carpeta. 
+
+-Testing de API
+Para que todos los tests se ejecuten correctamente, deberá quitar el middleware 'VerifyToken' que está asociado a cada Endpoint en index.js. 
+
+Para ejecutar los tests deberá usar 'npm test'

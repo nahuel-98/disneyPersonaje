@@ -18,47 +18,51 @@ const verifyToken = require('./verifyToken')
 //funciona
 router.post('/auth/register', async (req,res,next)=>{
     const { username, email, password } = req.body;
-    console.log()
+    if(!username || !email || !password){
+        return res.status(400).send('Falta ingresar el valor de una o más propiedades para crear el usuario nuevo') 
+    }
     const emailEnBD = await User.findOne({ where: { email: email } })
     
-    if(!emailEnBD){
+        if(!emailEnBD){
 
-        const user = await User.create({
-            username, email, password
-        
-                });
-                //si no funca, quizas sea que no toma bien el id
-                //usamos config.secret para codificar el token
-            const token = jwt.sign({id: user.id}, config.secret, {expiresIn: 60 * 60 * 24}) //me permite crear un token
-        
-            const msg = {
-                to: `${email}`,
-                from: 'nahux28@gmail.com',
-                subject: 'Bienvenido al maravilloso mundo de Disney',
-                text: 'Gracias por registrarte, estás a un paso de validar tu registro en nuestra web'
-            }
-            sgMail
-            .send(msg)
-            .then(() => {
-                console.log('Email sent')
-            })
-            .catch((error) => {
-                console.error(error)
-            })
-               
-            res.json({auth: true, token})
+            const user = await User.create({
+                username, email, password
+            
+                    });
+                    //si no funca, quizas sea que no toma bien el id
+                    //usamos config.secret para codificar el token
+                const token = jwt.sign({id: user.id}, config.secret, {expiresIn: 60 * 60 * 24}) //me permite crear un token
+            
+                const msg = {
+                    to: `${email}`,
+                    from: 'nahux28@gmail.com',
+                    subject: 'Bienvenido al maravilloso mundo de Disney',
+                    text: 'Gracias por registrarte, estás a un paso de validar tu registro en nuestra web'
+                }
+                sgMail
+                .send(msg)
+                .then(() => {
+                    console.log('Email sent')
+                })
+                .catch((error) => {
+                    console.error(error)
+                })
+                
+                res.status(201).json({auth: true, token})
     }
     else{
         return res.status(400).send("Ya hay un usuario creado con ese email");
     }
-    
-
 })
 
 
 //funciona
 router.post('/auth/login', async (req,res,next)=>{
     const{email,password}=req.body;
+
+    if(!email || !password){
+        return res.status(400).send('Falta ingresar el valor de una o más propiedades para iniciar sesión') 
+    }
     
     const user=await User.findOne({ where: { email: email } });
    
@@ -72,10 +76,10 @@ router.post('/auth/login', async (req,res,next)=>{
             expiresIn:60*60*24
         });
         
-        res.json({auth:true,token});
+        res.status(200).json({auth:true,token});
 
     }else{
-        res.status(401).json({auth:false,token:null});
+        return res.status(401).send("Contraseña inválida");;
     }
 
 })

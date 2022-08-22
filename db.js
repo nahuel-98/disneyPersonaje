@@ -10,11 +10,6 @@ const sequelize = new Sequelize(`
   }
 );
 
-
-
-
-
-
 modelCharacter(sequelize);
 modelFilm(sequelize);
 modelUser(sequelize)
