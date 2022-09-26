@@ -2,6 +2,7 @@ const { Sequelize, Op } = require("sequelize");
 const modelCharacter = require("./models/Character.js");
 const modelFilm = require("./models/Film.js");
 const modelUser = require("./models/User.js");
+const modelGenero = require("./models/Genero.js");
 require("dotenv").config();
 const sequelize = new Sequelize(
   `
@@ -14,11 +15,13 @@ const sequelize = new Sequelize(
 modelCharacter(sequelize);
 modelFilm(sequelize);
 modelUser(sequelize);
+modelGenero(sequelize);
 
-let { Character, Film } = sequelize.models;
+let { Character, Film, Genero} = sequelize.models;
 
 Character.belongsToMany(Film, { through: "CharacterXFilm" });
 Film.belongsToMany(Character, { through: "CharacterXFilm" });
+Film.belongsToMany(Genero, {through:"CharacterxGeneros"})
 
 module.exports = {
   ...sequelize.models,

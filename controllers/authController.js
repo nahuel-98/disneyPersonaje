@@ -2,20 +2,17 @@ const { Router } = require("express");
 const router = Router();
 const { User } = require("../db.js");
 const sgMail = require("@sendgrid/mail");
-
 require("dotenv").config();
-
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
-// const User = require('../models/User')
+
 const jwt = require("jsonwebtoken"); //me permite crear y validar tokens
 const config = require("../config");
-const verifyToken = require("./verifyToken");
 
-//similar al /signup
-//funciona
-router.post("/auth/register", async (req, res, next) => {
-  const { username, email, password } = req.body;
+
+
+  const registrarUsuario = async (req, res) => {
+    const { username, email, password } = req.body;
   if (!username || !email || !password) {
     return res
       .status(400)
@@ -56,11 +53,10 @@ router.post("/auth/register", async (req, res, next) => {
   } else {
     return res.status(400).send("Ya hay un usuario creado con ese email");
   }
-});
+  };
 
-//funciona
-router.post("/auth/login", async (req, res, next) => {
-  const { email, password } = req.body;
+  const iniciarSesion = async (req, res) => {
+    const { email, password } = req.body;
 
   if (!email || !password) {
     return res
@@ -85,6 +81,9 @@ router.post("/auth/login", async (req, res, next) => {
   } else {
     return res.status(401).send("Contraseña inválida");
   }
-});
-
-module.exports = router;
+  }
+  
+module.exports = {
+  registrarUsuario,
+  iniciarSesion
+};

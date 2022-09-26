@@ -4,6 +4,11 @@ module.exports = (sequelize) => {
   sequelize.define(
     "Character",
     {
+      id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+      },
       image: {
         type: DataTypes.STRING,
       },
@@ -23,7 +28,7 @@ module.exports = (sequelize) => {
         type: DataTypes.INTEGER,
       },
       history: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
       },
     },
     { timestamps: false, createdAt: false, updatedAt: false }
