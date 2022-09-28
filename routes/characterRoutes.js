@@ -14,12 +14,12 @@ router.get("/characters", verifyToken, obtenerPersonajes);
   
   
   //5. Detalle de Personaje. ESTADO: HECHO
-router.get("/character/:id",  detallePersonaje);
+router.get("/character/:id", verifyToken, detallePersonaje);
   
   //4. CRUD. - listo
   
   //CREATE. ESTADO: LISTO
-router.post("/character", verifyToken, crearPersonaje);
+router.post("/character",  crearPersonaje);
   
   //UPDATE. ESTADO: LISTO
 router.put("/character", verifyToken, actualizarPersonaje);

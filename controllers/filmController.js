@@ -12,6 +12,7 @@ const mostrarPelicula = async (req,res) => {
   }
 }
 
+//MODIFICADO, ADD SWAGGER
 const detallePelicula = async (req,res) => {
   try {
     let { id } = req.params;
@@ -22,7 +23,7 @@ const detallePelicula = async (req,res) => {
       include: [
         {
           model: Character,
-          attributes: ["name"],
+          attributes: ["name", "id","image", "age", "weight", "history"],
           through: {
             attributes: [],
           },

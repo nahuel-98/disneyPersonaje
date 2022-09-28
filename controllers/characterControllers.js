@@ -52,40 +52,71 @@ const obtenerPersonajes = async (req,res) => {
     }
 }
 
-
+//Funciona!
+//MODIFICADO, ADD SWAGGER
 const crearPersonaje = async (req,res) => {
-    let { image, name, age, weight, history } = req.body;
-    try {
-      if (image && name && age && weight && history) {
-        const newCharacter = await Character.create({
+  try {
+    const { image, name, age, weight, history, film } = req.body;
+    if (image && name && age && weight && history) {
+      const newCharacter = await Character.findOrCreate({
+        where: {
           image,
           name,
           age,
           weight,
-          history,
-        });
-        return res.status(201).json(newCharacter);
+          history          
+        }
+      });
+//Si no se encuentra la peli en la BBDD, crearla, caso contrario, encontrar su ID y vincularla con este personaje
+// Todo personaje tiene que estar en una película SI o SI, entonces. Si el personaje no está en la BBDD, no significa que la Peli no exista, puede que sí.
+//Si se creó el personaje porque no estaba en la BBDD (boolean true), entonces crea la pelicula y la vincula.
+      if(newCharacter[1]){
+        const newFilm = await Film.findOrCreate({
+          where:{
+            image: film.image,
+            title: film.title,
+            calification: film.calification
+          }
+          });
+        // if(newFilm[1]){
+          await newCharacter[0].addFilm(newFilm[0]);
+        // }
+        // await newCharacter[0].addFilm(newFilm);
       }
-      return res
-        .status(400)
-        .send(
-          "Falta ingresar el valor de una o más propiedades para crear el personaje"
-        );
-    } catch (e) {
-      res.send(e);
+       
+      // await page.addCategory(categories);
+
+      return res.status(201).json(newCharacter[0]);
     }
+    return res
+      .status(400)
+      .send(
+        "Falta ingresar el valor de una o más propiedades para crear el personaje"
+      );
+  } catch (e) {
+    res.send(e);
+  }
 }
 
 
-
+//MODIFICADO, ADD SWAGGER
 const detallePersonaje = async (req,res) => {
-    try {
+      try {
         let { id } = req.params;
     
         const character = await Character.findOne({
           where: {
             id,
           },
+          include: [
+            {
+              model: Character,
+              attributes: ["name", "id","image", "age", "weight", "history"],
+              through: {
+                attributes: [],
+              },
+            },
+          ],
         });
         if (!character) {
           return res.status(404).send("El personaje con el ID provisto no existe");
