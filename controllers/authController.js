@@ -6,6 +6,13 @@ require("dotenv").config();
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 
+// const bcrypt = require('bcryptjs');
+// const encryptPassword = async (password) =>{
+//   const salt = await bcrypt.genSalt(10);
+//   return bcrypt.hash(password,salt)
+// }
+
+
 const jwt = require("jsonwebtoken"); //me permite crear y validar tokens
 const config = require("../config");
 
@@ -28,17 +35,22 @@ const config = require("../config");
       email,
       password,
     });
+    // user.password = user.encryptPassword(user.password)
+
+    
     //si no funca, quizas sea que no toma bien el id
     //usamos config.secret para codificar el token
-    const token = jwt.sign({ id: user.id }, config.secret, {
+    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET_KEY, {
       expiresIn: 60 * 60 * 24,
-    }); //me permite crear un token
+    }); //me permite crear un token que dure 24 hs
+
+    console.log(user)
 
     const msg = {
       to: `${email}`,
-      from: "nahux28@gmail.com",
+      from: process.env.SENDGRID_EMAIL,
       subject: "Bienvenido al maravilloso mundo de Disney",
-      text: "Gracias por registrarte, estás a un paso de validar tu registro en nuestra web",
+      text: "Gracias por registrarte. Puedes iniciar sesión en POST /auth/login y obtén tu token de acceso.",
     };
     sgMail
       .send(msg)
@@ -73,7 +85,7 @@ const config = require("../config");
   }
 
   if (password === user.password) {
-    const token = jwt.sign({ id: user.id }, config.secret, {
+    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET_KEY, {
       expiresIn: 60 * 60 * 24,
     });
 

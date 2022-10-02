@@ -22,6 +22,7 @@ let { Character, Film, Genero} = sequelize.models;
 Character.belongsToMany(Film, { through: "CharacterXFilm" });
 Film.belongsToMany(Character, { through: "CharacterXFilm" });
 Film.belongsToMany(Genero, {through:"CharacterxGeneros"})
+Genero.belongsToMany(Film, {through:"FilmxGeneros"})
 
 module.exports = {
   ...sequelize.models,

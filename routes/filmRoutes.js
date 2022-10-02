@@ -9,7 +9,7 @@ const {
 const verifyToken = require("../controllers/verifyToken.js");
 const router = express.Router()
 
-router.get("/movies", verifyToken, mostrarPelicula);
+router.get("/movies", mostrarPelicula);
 
 //8. Detalle de películas con sus personajes. Estado: Listo
 router.get("/films/:id", detallePelicula);

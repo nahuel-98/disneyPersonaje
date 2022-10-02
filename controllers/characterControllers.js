@@ -36,6 +36,15 @@ const obtenerPersonajes = async (req,res) => {
               where: {
                 id: movies,
               },
+              include: [
+                {
+                  model: Character,
+                  attributes: ["name", "id", "image", "weight", "age", "history"],
+                  through: {
+                    attributes: [],
+                  },
+                },
+              ],
             })
           );
         } catch (e) {
@@ -57,7 +66,7 @@ const obtenerPersonajes = async (req,res) => {
 const crearPersonaje = async (req,res) => {
   try {
     const { image, name, age, weight, history, film } = req.body;
-    if (image && name && age && weight && history) {
+    if (image && name && age && weight && history && film) {
       const newCharacter = await Character.findOrCreate({
         where: {
           image,
@@ -66,11 +75,18 @@ const crearPersonaje = async (req,res) => {
           weight,
           history          
         }
-      });
+    });
 //Si no se encuentra la peli en la BBDD, crearla, caso contrario, encontrar su ID y vincularla con este personaje
 // Todo personaje tiene que estar en una película SI o SI, entonces. Si el personaje no está en la BBDD, no significa que la Peli no exista, puede que sí.
 //Si se creó el personaje porque no estaba en la BBDD (boolean true), entonces crea la pelicula y la vincula.
-      if(newCharacter[1]){
+    const newGenre = await Genero.findOrCreate({
+      where:{
+        name: film.genre.name,
+        image: film.genre.image
+      }
+    });
+
+    // if(newCharacter[1] && film){
         const newFilm = await Film.findOrCreate({
           where:{
             image: film.image,
@@ -78,14 +94,24 @@ const crearPersonaje = async (req,res) => {
             calification: film.calification
           }
           });
-        // if(newFilm[1]){
+          
           await newCharacter[0].addFilm(newFilm[0]);
-        // }
-        // await newCharacter[0].addFilm(newFilm);
-      }
-       
-      // await page.addCategory(categories);
-
+          await newFilm[0].addGenero(newGenre[0]);
+          await newGenre[0].addFilm(newFilm[0]);
+          
+    // }
+      //si el personaje ya estaba creado y me dan el film de la otra peli en la que sale
+    // if(!newCharacter[1] && film){
+    //     const newFilm = await Film.findOrCreate({
+    //       where:{
+    //         image: film.image,
+    //         title: film.title,
+    //         calification: film.calification
+    //       }
+    //       });
+    //     await newFilm.addGenero(newGenre);
+    //     await newCharacter[0].addFilm(newFilm[0]);
+    //   }
       return res.status(201).json(newCharacter[0]);
     }
     return res
@@ -110,8 +136,8 @@ const detallePersonaje = async (req,res) => {
           },
           include: [
             {
-              model: Character,
-              attributes: ["name", "id","image", "age", "weight", "history"],
+              model: Film,
+              attributes: ["title", "id", "calification", "image"],
               through: {
                 attributes: [],
               },
