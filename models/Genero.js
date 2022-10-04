@@ -1,15 +1,17 @@
-const {DataTypes} = require('sequelize')
+const { DataTypes } = require("sequelize");
 
-module.exports= sequelize => {
-    sequelize.define('Genero' , {
-        name: {
-            type: DataTypes.STRING
-        },
-        image: {
-            type: DataTypes.STRING,
-            allowNull: false
-        }
+module.exports = (sequelize) => {
+  sequelize.define(
+    "Genero",
+    {
+      name: {
+        type: DataTypes.STRING,
+      },
+      image: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
     },
-    {timestamps: false
-});
-}
+    { timestamps: false }
+  );
+};

@@ -5,8 +5,7 @@ const modelUser = require("./models/User.js");
 const modelGenero = require("./models/Genero.js");
 require("dotenv").config();
 const sequelize = new Sequelize(
-  `
-  postgres://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:5432/disneydb`,
+  `postgres://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:5432/disneydb`,
   {
     logging: false,
   }
@@ -17,12 +16,12 @@ modelFilm(sequelize);
 modelUser(sequelize);
 modelGenero(sequelize);
 
-let { Character, Film, Genero} = sequelize.models;
+let { Character, Film, Genero } = sequelize.models;
 
 Character.belongsToMany(Film, { through: "CharacterXFilm" });
 Film.belongsToMany(Character, { through: "CharacterXFilm" });
-Film.belongsToMany(Genero, {through:"CharacterxGeneros"})
-Genero.belongsToMany(Film, {through:"FilmxGeneros"})
+Film.belongsToMany(Genero, { through: "CharacterxGeneros" });
+Genero.belongsToMany(Film, { through: "FilmxGeneros" });
 
 module.exports = {
   ...sequelize.models,

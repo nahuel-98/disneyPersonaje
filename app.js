@@ -3,11 +3,10 @@ const app = express();
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
-// app.use(require("./controllers/authController"));
 
 //Router, para usar controllers y modularizar.
-app.use('/', require('./routes/characterRoutes'))
-app.use('/', require('./routes/filmRoutes'))
-app.use('/', require('./routes/authRoutes'))
+app.use("/", require("./routes/characterRoutes"));
+app.use("/", require("./routes/filmRoutes"));
+app.use("/", require("./routes/authRoutes"));
 
 module.exports = app;
