@@ -1,3 +1,5 @@
+AGREGAR INFO SOBRE EL TOKEN QUE TIENEN QUE ESPECIFICAR EN .ENV PARA QUE CORRAN LOS TESTS.
+
 
 --Usar npm start para inicializar el server y npm i para instalar todas las dependencias de Node que se usaron en este proyecto.
 

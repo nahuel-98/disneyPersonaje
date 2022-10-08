@@ -5,7 +5,7 @@ const modelUser = require("./models/User.js");
 const modelGenero = require("./models/Genero.js");
 require("dotenv").config();
 const sequelize = new Sequelize(
-  `postgres://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:5432/disneydb`,
+  `postgres://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:5432/disney_db`,
   {
     logging: false,
   }

@@ -1,9 +1,16 @@
 let chai = require("chai");
 let chaiHttp = require("chai-http");
 let server = require("../index");
+require('dotenv').config();
+
 //Assertion style
 chai.should();
 chai.use(chaiHttp);
+
+// Token para los tests.
+const testToken = process.env.TEST_TOKEN;
+
+
 
 describe("Personajes Disney API", () => {
   /**
@@ -15,6 +22,7 @@ describe("Personajes Disney API", () => {
       chai
         .request(server)
         .get("/characters")
+        .set({ Authorization: testToken })
         .end((err, response) => {
           response.should.have.status(200);
           response.body.should.be.a("array");
@@ -26,6 +34,7 @@ describe("Personajes Disney API", () => {
       chai
         .request(server)
         .get("/character")
+        .set({ Authorization: testToken })
         .end((err, response) => {
           response.should.have.status(404);
           done();
@@ -44,6 +53,7 @@ describe("Personajes Disney API", () => {
       chai
         .request(server)
         .get("/character/" + characterID)
+        .set({ Authorization: testToken })
         .end((err, response) => {
           response.should.have.status(200);
           response.body.should.be.a("object");
@@ -65,6 +75,7 @@ describe("Personajes Disney API", () => {
       chai
         .request(server)
         .get("/character/" + characterID)
+        .set({ Authorization: testToken })
         .end((err, response) => {
           response.should.have.status(404);
           response.text.should.be.eq(
@@ -100,6 +111,7 @@ describe("Personajes Disney API", () => {
         .request(server)
         .post("/character/")
         .send(character)
+        .set({ Authorization: testToken })
         .end((err, response) => {
           response.should.have.status(201);
           response.body.should.be.a("object");
@@ -128,6 +140,7 @@ describe("Personajes Disney API", () => {
         .request(server)
         .post("/character/")
         .send(character)
+        .set({ Authorization: testToken })
         .end((err, response) => {
           response.should.have.status(400);
           response.text.should.be.eq(
@@ -156,6 +169,7 @@ describe("Personajes Disney API", () => {
         .request(server)
         .put("/character/" + idCharacter)
         .send(character)
+        .set({ Authorization: testToken })
         .end((err, response) => {
           response.should.have.status(200);
           response.text.should.be.eq("1 personajes modificados");
@@ -177,6 +191,7 @@ describe("Personajes Disney API", () => {
         .request(server)
         .put(`/character/${idCharacter}`)
         .send(character)
+        .set({ Authorization: testToken })
         .end((err, response) => {
           response.should.have.status(400);
           response.text.should.be.eq(
@@ -196,6 +211,7 @@ describe("Personajes Disney API", () => {
       chai
         .request(server)
         .delete("/character/" + characterID)
+        .set({ Authorization: testToken })
         .end((err, response) => {
           response.should.have.status(200);
           done();
@@ -207,6 +223,7 @@ describe("Personajes Disney API", () => {
       chai
         .request(server)
         .delete("/character/" + characterID)
+        .set({ Authorization: testToken })
         .end((err, response) => {
           response.should.have.status(400);
           response.text.should.be.eq(
@@ -229,6 +246,7 @@ describe("Personajes Disney API", () => {
       chai
         .request(server)
         .get("/movies")
+        .set({ Authorization: testToken })
         .end((err, response) => {
           response.should.have.status(200);
           response.body.should.be.a("array");
@@ -240,6 +258,7 @@ describe("Personajes Disney API", () => {
       chai
         .request(server)
         .get("/movie")
+        .set({ Authorization: testToken })
         .end((err, response) => {
           response.should.have.status(404);
           done();
@@ -258,6 +277,7 @@ describe("Personajes Disney API", () => {
       chai
         .request(server)
         .get("/movies/" + filmID)
+        .set({ Authorization: testToken })
         .end((err, response) => {
           response.should.have.status(200);
           response.body.should.be.a("object");
@@ -274,6 +294,7 @@ describe("Personajes Disney API", () => {
       chai
         .request(server)
         .get("/movies/" + filmID)
+        .set({ Authorization: testToken })
         .end((err, response) => {
           response.should.have.status(404);
           response.text.should.be.eq(
@@ -299,6 +320,7 @@ describe("Personajes Disney API", () => {
         .request(server)
         .post("/film/")
         .send(film)
+        .set({ Authorization: testToken })
         .end((err, response) => {
           response.should.have.status(201);
           response.body.should.be.a("object");
@@ -321,6 +343,7 @@ describe("Personajes Disney API", () => {
         .request(server)
         .post("/film/")
         .send(film)
+        .set({ Authorization: testToken })
         .end((err, response) => {
           response.should.have.status(400);
           response.text.should.be.eq(
@@ -347,6 +370,7 @@ describe("Personajes Disney API", () => {
         .request(server)
         .put("/movies/"+ id)
         .send(film)
+        .set({ Authorization: testToken })
         .end((err, response) => {
           response.should.have.status(200);
           response.text.should.be.eq("1 films modificados");
@@ -366,6 +390,7 @@ describe("Personajes Disney API", () => {
         .request(server)
         .put("/movies/"+ id)
         .send(film)
+        .set({ Authorization: testToken })
         .end((err, response) => {
           response.should.have.status(400);
           response.text.should.be.eq(
@@ -385,6 +410,7 @@ describe("Personajes Disney API", () => {
       chai
         .request(server)
         .delete("/movies/" + movieID)
+        .set({ Authorization: testToken })
         .end((err, response) => {
           response.should.have.status(200);
           response.text.should.be.eq("1 película/serie eliminada");
@@ -398,6 +424,7 @@ describe("Personajes Disney API", () => {
       chai
         .request(server)
         .delete("/movies/" + filmID)
+        .set({ Authorization: testToken })
         .end((err, response) => {
           response.should.have.status(400);
           response.text.should.be.eq(
@@ -426,6 +453,7 @@ describe("Personajes Disney API", () => {
         .request(server)
         .post("/auth/register")
         .send(user)
+        .set({ Authorization: testToken })
         .end((err, response) => {
           response.should.have.status(201);
           response.body.should.be.a("object");
@@ -445,6 +473,7 @@ describe("Personajes Disney API", () => {
         .request(server)
         .post("/auth/register/")
         .send(film)
+        .set({ Authorization: testToken })
         .end((err, response) => {
           response.should.have.status(400);
           response.text.should.be.eq(
@@ -465,6 +494,7 @@ describe("Personajes Disney API", () => {
         .request(server)
         .post("/auth/login")
         .send(user)
+        .set({ Authorization: testToken })
         .end((err, response) => {
           response.should.have.status(201);
           response.body.should.be.a("object");
@@ -482,6 +512,7 @@ describe("Personajes Disney API", () => {
         .request(server)
         .post("/auth/login/")
         .send(usuario)
+        .set({ Authorization: testToken })
         .end((err, response) => {
           response.should.have.status(400);
           response.text.should.be.eq(
@@ -500,6 +531,7 @@ describe("Personajes Disney API", () => {
         .request(server)
         .post("/auth/login/")
         .send(usuario)
+        .set({ Authorization: testToken })
         .end((err, response) => {
           response.should.have.status(401);
           response.text.should.be.eq("Contraseña inválida");
